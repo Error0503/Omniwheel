@@ -1,4 +1,3 @@
 # Omniwheel
 
-# TODO
-Földre nyomtattott kommandok
+Arduino autó kontroll modul
