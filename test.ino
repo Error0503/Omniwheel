@@ -4,12 +4,12 @@ char x = 0;
 
 void setup() {
   Wire.begin(9);
-  Wire.onReceive(asd);
-  Wire.onRequest(yeet);
+  Wire.onReceive(asd); // Slave recieve
+  Wire.onRequest(yeet); // Slave send
   Serial.begin(9600);
 }
 
-void asd(int b) {
+void asd(int b) { // Slave recieve
   while (Wire.available()) {
     x = Wire.read();
     Serial.print(x);
@@ -17,7 +17,7 @@ void asd(int b) {
   Serial.println();
 }
 
-void yeet() {
+void yeet() { // Slave send
   char* ch = "henlo";
   Wire.write(ch);
   Serial.println("Sending...");
