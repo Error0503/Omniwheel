@@ -1,13 +1,16 @@
 #include <Wire.h>
-#include <thread>
 
 #define sensor = 1;
 #define motor = 2;
+
+static struct pt pt1, pt2;
 
 void setup()
 {
     Wire.begin(); // Master init
     Serial.begin(9600);
+    PT_INIT(&pt1);
+    PT_INIT(&pt2);
     connect();
 }
 
@@ -28,16 +31,11 @@ void send()
  */
 void connect()
 {
-    Seral.println("Connecting...");
-    std::thread t1(pingSans);
-    std::thread t2(pingMoto);
-
-    t1.join();
-    Serial.println("First thread finished!");
-    t2.join();
-    Serial.println("Second thread finished!");
-    Serial.println("\"Everything is connected\"");
-    
+    Serial.println("Connecting...");
+    Serial.println("Connect sensor node!");
+    pingSans();
+    Serial.println("Connect motor node!");
+    pingMoto();
 }
 
 /**
@@ -45,21 +43,28 @@ void connect()
  */
 void pingSans()
 {
-    Wire.beginTransmission(sensor);
-    short w = 0;
-    Wire.write(w);
-    Wire.endTransmission(sensor);
-    Wire.requestFrom(sensor, 1);
-    int r;
-    while (Wire.available())
+    while (true)
     {
-        r = Wire.read();
-    }
-    if (r = w)
-    {
-        Serial.println("Connected to sensor!");
-    } else {
-        Serial.println("Connection failed - Recieved wrong answer");
+        Wire.beginTransmission(sensor);
+        short w = 0;
+        Wire.write(w);
+        Wire.endTransmission(sensor);
+        Wire.requestFrom(sensor, 1);
+        int r;
+        while (Wire.available())
+        {
+            r = Wire.read();
+        }
+        if (r = w)
+        {
+            Serial.println("Connected to sensor!");
+            break;
+        }
+        else
+        {
+            Serial.println("Connection failed - Recieved wrong answer");
+            Serial.println("Trying again");
+        }
     }
 }
 
@@ -68,20 +73,26 @@ void pingSans()
  */
 void pingMoto()
 {
-    Wire.beginTransmission(sensor);
-    short w = 1;
-    Wire.write(w);
-    Wire.endTransmission(sensor);
-    Wire.requestFrom(sensor, 1);
-    int r;
-    while (Wire.available())
+    while (true)
     {
-        r = Wire.read();
-    }
-    if (r = w)
-    {
-        Serial.println("Connected to motor!");
-    } else {
-        Serial.println("Connection failed - Recieved wrong answer");
+        Wire.beginTransmission(sensor);
+        short w = 1;
+        Wire.write(w);
+        Wire.endTransmission(sensor);
+        Wire.requestFrom(sensor, 1);
+        int r;
+        while (Wire.available())
+        {
+            r = Wire.read();
+        }
+        if (r = w)
+        {
+            Serial.println("Connected to motor!");
+        }
+        else
+        {
+            Serial.println("Connection failed - Recieved wrong answer");
+            Serial.println("Trying again");
+        }
     }
 }
